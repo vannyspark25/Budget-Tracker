@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Budget Trucker Dashboard</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial;
+}
+
+body{
+    background:#f4f6f9;
+}
+
+.sidebar{
+    width:250px;
+    height:100vh;
+    background:#1e3a5f;
+    position:fixed;
+}
+
+.sidebar h2{
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:15px;
+}
+
+.sidebar a:hover{
+    background:#2d5a88;
+}
+
+.main{
+    margin-left:260px;
+    padding:20px;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 5px rgba(0,0,0,.1);
+}
+
+.card h3{
+    color:#1e3a5f;
+}
+
+.value{
+    font-size:30px;
+    margin-top:10px;
+    font-weight:bold;
+}
+
+.quick{
+    margin-top:30px;
+}
+
+.buttons{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:15px;
+}
+
+button{
+    padding:15px;
+    background:#1e3a5f;
+    color:white;
+    border:none;
+    cursor:pointer;
+    border-radius:8px;
+}
+
+.notifications{
+    margin-top:30px;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+}
+
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<h2>🚛 Budget Trucker</h2>
+
+<a href="dashboard.html">Dashboard</a>
+<a href="income.html">Income</a>
+<a href="expense.html">Expenses</a>
+<a href="budget.html">Budget</a>
+<a href="reports.html">Reports</a>
+<a href="route.html">Routes</a>
+<a href="fuel.html">Fuel Monitoring</a>
+<a href="notifications.html">Notifications</a>
+<a href="storage.html">Data Storage</a>
+<a href="settings.html">Settings</a>
+<a href="logout.html">Logout</a>
+
+</div>
+
+
+<!-- MAIN -->
+
+<div class="main">
+
+<h1>Dashboard Overview</h1>
+
+<br>
+
+<div class="cards">
+
+<div class="card">
+<h3>Total Income</h3>
+<div class="value" id="income">0</div>
+</div>
+
+<div class="card">
+<h3>Total Expenses</h3>
+<div class="value" id="expense">0</div>
+</div>
+
+<div class="card">
+<h3>Budget</h3>
+<div class="value" id="budget">0</div>
+</div>
+
+<div class="card">
+<h3>Profit / Loss</h3>
+<div class="value" id="profit">0</div>
+</div>
+
+<div class="card">
+<h3>Total Trips</h3>
+<div class="value" id="trips">0</div>
+</div>
+
+<div class="card">
+<h3>Fuel Records</h3>
+<div class="value" id="fuel">0</div>
+</div>
+
+</div>
+
+
+<!-- QUICK ACCESS -->
+
+<div class="quick">
+
+<h2>Quick Actions</h2>
+
+<br>
+
+<div class="buttons">
+
+<button onclick="location.href='income.html'">
+➕ Add Income
+</button>
+
+<button onclick="location.href='expense.html'">
+💰 Add Expense
+</button>
+
+<button onclick="location.href='route.html'">
+🚛 Add Trip
+</button>
+
+<button onclick="location.href='fuel.html'">
+⛽ Record Fuel
+</button>
+
+<button onclick="location.href='reports.html'">
+📊 View Reports
+</button>
+
+<button onclick="location.href='notifications.html'">
+🔔 Notifications
+</button>
+
+</div>
+
+</div>
+
+
+<!-- NOTIFICATIONS -->
+
+<div class="notifications">
+
+<h2>Recent Notifications</h2>
+
+<br>
+
+<p>✔ Welcome to Budget Trucker System</p>
+<p>✔ Monitor your expenses daily</p>
+<p>✔ Check fuel consumption regularly</p>
+
+</div>
+
+</div>
+
+
+<script>
+
+// INCOME
+let incomes =
+JSON.parse(localStorage.getItem("incomes")) || [];
+
+let totalIncome =
+incomes.reduce((sum,item)=>sum+item.amount,0);
+
+
+// EXPENSES
+let expenses =
+JSON.parse(localStorage.getItem("expenses")) || [];
+
+let totalExpense =
+expenses.reduce((sum,item)=>sum+item.amount,0);
+
+
+// BUDGET
+let budget =
+localStorage.getItem("budget") || 0;
+
+
+// PROFIT
+let profit =
+totalIncome-totalExpense;
+
+
+// TRIPS
+let trips =
+JSON.parse(localStorage.getItem("trips")) || [];
+
+
+// FUEL
+let fuels =
+JSON.parse(localStorage.getItem("fuels")) || [];
+
+
+// DISPLAY
+
+document.getElementById("income").innerHTML="$"+totalIncome;
+
+document.getElementById("expense").innerHTML="$"+totalExpense;
+
+document.getElementById("budget").innerHTML="$"+budget;
+
+document.getElementById("profit").innerHTML="$"+profit;
+
+document.getElementById("trips").innerHTML=trips.length;
+
+document.getElementById("fuel").innerHTML=fuels.length;
+
+</script>
+
+</body>
+</html>

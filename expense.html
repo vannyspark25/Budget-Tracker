@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Expense Tracking</title>
+
+<style>
+body {
+    font-family: Arial;
+    margin: 0;
+    background: #f4f6f9;
+}
+
+header {
+    background: #1e3a5f;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+.container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.addBtn {
+    background: #1e3a5f;
+    color: white;
+}
+
+.editBtn {
+    background: #f0ad4e;
+    color: white;
+    width: 48%;
+}
+
+.deleteBtn {
+    background: #d9534f;
+    color: white;
+    width: 48%;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.item {
+    background: #fafafa;
+    border-left: 5px solid #d9534f;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.totalBox {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+}
+</style>
+</head>
+
+<body>
+<a href="login.html">Dashboard</a>
+<a href="registration.html">Dashboard</a>
+<a href="income.html">Income Management</a>
+<a href="expense.html">Expense Tracking</a>
+<a href="budget.html">Budget Management</a>
+<a href="reports.html">Reports & Analytics</a>
+<a href="route.html">Route Management</a>
+<a href="fuel.html">Fuel Monitoring</a>
+<a href="notifications.html">Notifications</a>
+<a href="storage.html">Data Storage</a>
+<a href="settings.html">Settings</a>
+<header>
+    <h2>⛽ Expense Tracking</h2>
+</header>
+
+<div class="container">
+
+    <!-- ADD EXPENSE -->
+    <div class="card">
+        <h3>Add Expense</h3>
+
+        <input type="number" id="amount" placeholder="Expense Amount">
+
+        <select id="category">
+            <option value="Fuel">Fuel</option>
+            <option value="Maintenance">Maintenance</option>
+            <option value="Driver Allowance">Driver Allowance</option>
+            <option value="Other">Other</option>
+        </select>
+
+        <input type="text" id="description" placeholder="Description">
+
+        <button class="addBtn" onclick="addExpense()">Add Expense</button>
+    </div>
+
+    <!-- TOTAL -->
+    <div class="card totalBox">
+        Total Expenses: $<span id="total">0</span>
+    </div>
+
+    <!-- LIST -->
+    <div class="card">
+        <h3>Expense History</h3>
+        <div id="expenseList"></div>
+    </div>
+
+</div>
+
+<script>
+
+let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+
+// ADD EXPENSE
+function addExpense() {
+    let amount = document.getElementById("amount").value;
+    let category = document.getElementById("category").value;
+    let description = document.getElementById("description").value;
+
+    if (amount === "") {
+        alert("Enter amount");
+        return;
+    }
+
+    let expense = {
+        id: Date.now(),
+        amount: Number(amount),
+        category: category,
+        description: description,
+        date: new Date().toLocaleString()
+    };
+
+    expenses.push(expense);
+    localStorage.setItem("expenses", JSON.stringify(expenses));
+
+    clearForm();
+    renderExpenses();
+}
+
+// CLEAR FORM
+function clearForm() {
+    document.getElementById("amount").value = "";
+    document.getElementById("description").value = "";
+}
+
+// RENDER EXPENSES
+function renderExpenses() {
+    let list = document.getElementById("expenseList");
+    list.innerHTML = "";
+
+    let total = 0;
+
+    expenses.forEach((exp, index) => {
+        total += exp.amount;
+
+        list.innerHTML += `
+            <div class="item">
+                <b>${exp.category}</b> - $${exp.amount}<br>
+                <small>${exp.description}</small><br>
+                <small>${exp.date}</small><br>
+
+                <div class="row">
+                    <button class="editBtn" onclick="editExpense(${index})">Edit</button>
+                    <button class="deleteBtn" onclick="deleteExpense(${index})">Delete</button>
+                </div>
+            </div>
+        `;
+    });
+
+    document.getElementById("total").innerText = total;
+}
+
+// DELETE
+function deleteExpense(index) {
+    expenses.splice(index, 1);
+    localStorage.setItem("expenses", JSON.stringify(expenses));
+    renderExpenses();
+}
+
+// EDIT
+function editExpense(index) {
+    let exp = expenses[index];
+
+    document.getElementById("amount").value = exp.amount;
+    document.getElementById("category").value = exp.category;
+    document.getElementById("description").value = exp.description;
+
+    deleteExpense(index);
+}
+
+// INIT
+renderExpenses();
+
+</script>
+
+</body>
+</html>
