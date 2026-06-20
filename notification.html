@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Notifications & Alerts</title>
+
+<style>
+
+body{
+    margin:0;
+    background:#f4f6f9;
+    font-family:Arial;
+}
+
+header{
+    background:#1e3a5f;
+    color:white;
+    text-align:center;
+    padding:15px;
+}
+
+.container{
+    width:90%;
+    max-width:900px;
+    margin:auto;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    margin-top:20px;
+    border-radius:10px;
+    box-shadow:0px 2px 5px rgba(0,0,0,.1);
+}
+
+.notification{
+    padding:15px;
+    margin-top:10px;
+    border-left:5px solid orange;
+    background:#eef3f8;
+}
+
+.warning{
+    border-left:5px solid red;
+}
+
+.success{
+    border-left:5px solid green;
+}
+
+button{
+    background:red;
+    color:white;
+    border:none;
+    padding:8px 15px;
+    cursor:pointer;
+    margin-top:10px;
+    border-radius:5px;
+}
+
+</style>
+
+</head>
+<body>
+<a href="dashboard.html">Dashboard</a>
+<a href="income.html">Income Management</a>
+<a href="expense.html">Expense Tracking</a>
+<a href="budget.html">Budget Management</a>
+<a href="reports.html">Reports & Analytics</a>
+<a href="route.html">Route Management</a>
+<a href="fuel.html">Fuel Monitoring</a>
+<a href="notifications.html">Notifications</a>
+<a href="storage.html">Data Storage</a>
+<a href="settings.html">Settings</a>
+<header>
+<h2>🔔 Notifications & Alerts</h2>
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h3>Notification Center</h3>
+
+<div id="notificationList"></div>
+
+</div>
+
+</div>
+
+<script>
+
+// notification array
+let notifications = [];
+
+// ========================
+// BUDGET WARNING
+// ========================
+
+let budget = Number(localStorage.getItem("budget")) || 0;
+
+let expenses =
+JSON.parse(localStorage.getItem("expenses")) || [];
+
+let totalExpenses = expenses.reduce(
+(sum,item)=>sum+item.amount,0
+);
+
+if(totalExpenses >= budget && budget>0){
+
+notifications.push({
+type:"warning",
+message:"⚠ Budget limit exceeded.",
+date:new Date().toLocaleString()
+});
+
+}
+
+else if(totalExpenses >= budget*0.8 && budget>0){
+
+notifications.push({
+type:"warning",
+message:"⚠ You have used 80% of your budget.",
+date:new Date().toLocaleString()
+});
+
+}
+
+
+
+// ========================
+// EXPENSE REMINDER
+// ========================
+
+notifications.push({
+
+type:"normal",
+
+message:"💰 Remember to record today's expenses.",
+
+date:new Date().toLocaleString()
+
+});
+
+
+
+// ========================
+// LOW FUEL WARNING
+// ========================
+
+let fuelRecords =
+JSON.parse(localStorage.getItem("fuels")) || [];
+
+if(fuelRecords.length>0){
+
+let lastFuel =
+fuelRecords[fuelRecords.length-1];
+
+if(lastFuel.litres < 20){
+
+notifications.push({
+
+type:"warning",
+
+message:"⛽ Low fuel warning. Fuel level below 20 litres.",
+
+date:new Date().toLocaleString()
+
+});
+
+}
+
+}
+
+
+
+// ========================
+// MONTHLY SUMMARY
+// ========================
+
+let incomes =
+JSON.parse(localStorage.getItem("incomes")) || [];
+
+let totalIncome =
+incomes.reduce((sum,item)=>sum+item.amount,0);
+
+let profit =
+totalIncome-totalExpenses;
+
+notifications.push({
+
+type:"success",
+
+message:
+"📊 Monthly Summary: Income = $" +
+totalIncome +
+", Expenses = $" +
+totalExpenses +
+", Profit = $" +
+profit,
+
+date:new Date().toLocaleString()
+
+});
+
+
+
+// DISPLAY NOTIFICATIONS
+
+function showNotifications(){
+
+let list =
+document.getElementById("notificationList");
+
+list.innerHTML="";
+
+notifications.forEach((note,index)=>{
+
+list.innerHTML += `
+
+<div class="notification ${note.type}">
+
+<h4>${note.message}</h4>
+
+<p>${note.date}</p>
+
+<button onclick="deleteNotification(${index})">
+
+Delete
+
+</button>
+
+</div>
+
+`;
+
+});
+
+}
+
+
+function deleteNotification(index){
+
+notifications.splice(index,1);
+
+showNotifications();
+
+}
+
+showNotifications();
+
+</script>
+
+</body>
+</html>
