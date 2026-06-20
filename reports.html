@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Reports - Budget Trucker</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root{
+  --navy:#1a2e4a;
+  --navy-dark:#111e30;
+  --navy-mid:#243c5e;
+  --accent:#f5a623;
+  --success:#27ae60;
+  --danger:#e74c3c;
+  --warning-color:#f39c12;
+
+  /* NEW MODERN BACKGROUND */
+  --bg: linear-gradient(135deg, #e9eef5 0%, #f7f9fc 100%);
+
+  --card:#ffffff;
+  --text:#1a2e4a;
+  --muted:#6b7a8d;
+  --border:#dce3ef;
+  --sidebar-w:260px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+  font-family:'Segoe UI',Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:var(--sidebar-w);
+  height:100vh;
+  background:linear-gradient(180deg,var(--navy-dark) 0%,var(--navy) 100%);
+  position:fixed;
+  top:0;
+  left:0;
+  display:flex;
+  flex-direction:column;
+  overflow-y:auto;
+}
+
+.sidebar-logo{
+  padding:24px 20px 18px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.sidebar-logo h2{
+  color:#fff;
+  font-size:17px;
+}
+
+.sidebar nav{flex:1;padding:14px 0;}
+
+.sidebar a{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  color:rgba(255,255,255,0.72);
+  text-decoration:none;
+  padding:12px 22px;
+  font-size:14px;
+}
+
+.sidebar a:hover,
+.sidebar a.active{
+  color:#fff;
+  background:rgba(255,255,255,0.08);
+  border-left:3px solid var(--accent);
+}
+
+/* MAIN */
+.main{
+  margin-left:var(--sidebar-w);
+  min-height:100vh;
+}
+
+/* TOPBAR */
+.topbar{
+  background:#fff;
+  padding:16px 28px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  position:sticky;
+  top:0;
+}
+
+.user-chip{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:var(--bg);
+  border-radius:20px;
+  padding:6px 14px;
+}
+
+.avatar{
+  width:30px;height:30px;
+  background:var(--navy);
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+}
+
+/* CONTENT */
+.content{padding:28px;}
+
+/* IMAGE BANNER */
+.banner-card{
+  position:relative;
+  overflow:hidden;
+  border-radius:14px;
+  margin-bottom:20px;
+}
+
+.banner-card img{
+  width:100%;
+  height:220px;
+  object-fit:cover;
+  filter:brightness(55%);
+}
+
+.banner-text{
+  position:absolute;
+  top:50%;
+  left:30px;
+  transform:translateY(-50%);
+  color:#fff;
+}
+
+.banner-text h2{
+  font-size:26px;
+  margin-bottom:6px;
+}
+
+/* SUMMARY */
+.summary-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  margin-bottom:20px;
+}
+
+.sum-box{
+  background:linear-gradient(135deg,var(--navy),var(--navy-mid));
+  color:#fff;
+  border-radius:12px;
+  padding:20px;
+  text-align:center;
+}
+
+.sum-box.green{background:linear-gradient(135deg,#1e8449,#27ae60);}
+.sum-box.red{background:linear-gradient(135deg,#922b21,#e74c3c);}
+
+.sum-box .s-val{
+  font-size:24px;
+  font-weight:800;
+  margin-top:6px;
+}
+
+/* CARDS (GLASS EFFECT) */
+.card{
+  background:rgba(255,255,255,0.85);
+  backdrop-filter:blur(10px);
+  border-radius:12px;
+  padding:22px;
+  border:1px solid var(--border);
+  margin-bottom:20px;
+}
+
+.two-col{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:22px;
+}
+
+/* CHART */
+.chart-wrap{
+  max-width:600px;
+  margin:auto;
+}
+
+/* BUTTON */
+.btn{
+  padding:10px 18px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.btn-primary{
+  background:var(--navy);
+  color:#fff;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <h2>🚛 BudgetTrucker</h2>
+  </div>
+
+  <nav>
+    <a href="dashboard.html">📊 Dashboard</a>
+    <a href="income.html">💰 Income</a>
+    <a href="expense.html">📤 Expenses</a>
+    <a class="active" href="reports.html">📈 Reports</a>
+  </nav>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <h1>📈 Reports & Analytics</h1>
+    <div class="user-chip">
+      <div class="avatar" id="av">U</div>
+      <span id="uname">User</span>
+    </div>
+  </div>
+
+  <div class="content">
+
+   <!-- IMAGE BANNER -->
+<div class="card banner-card">
+  <img src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=1200&q=80">
+
+  <div class="banner-text">
+    <h2>📊 Smart Trucking Analytics</h2>
+    <p>Track income, expenses & performance in real time</p>
+  </div>
+</div>
+
+<!-- DESCRIPTION UNDER IMAGE -->
+<div class="card image-description">
+  <h3>📌 System Overview</h3>
+  <p>
+    Budget Trucker is a smart financial tracking system designed for transport and logistics management.
+    It helps drivers and managers monitor income, expenses, fuel usage, and profit/loss in real time.
+    The system provides clear reports and visual analytics to support better financial decisions and route planning.
+  </p>
+</div>
+
+    <!-- SUMMARY -->
+    <div class="summary-grid">
+      <div class="sum-box green">
+        <div>Total Income</div>
+        <div class="s-val" id="incDisp">0</div>
+      </div>
+
+      <div class="sum-box red">
+        <div>Total Expenses</div>
+        <div class="s-val" id="expDisp">0</div>
+      </div>
+
+      <div class="sum-box">
+        <div>Profit / Loss</div>
+        <div class="s-val" id="profDisp">0</div>
+      </div>
+    </div>
+
+    <!-- CHARTS -->
+    <div class="two-col">
+
+      <div class="card">
+        <h3>📊 Income vs Expenses</h3>
+        <canvas id="barChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h3>🥧 Expense Breakdown</h3>
+        <canvas id="pieChart"></canvas>
+      </div>
+
+    </div>
+
+    <!-- EXPORT -->
+    <div class="card">
+      <h3>📤 Export</h3>
+      <button class="btn btn-primary" onclick="window.print()">🖨️ Print / PDF</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let u = localStorage.getItem('loggedInUser') || 'User';
+document.getElementById('uname').textContent = u;
+document.getElementById('av').textContent = u.charAt(0);
+
+let currency = localStorage.getItem('currency') || 'KSh';
+
+let incomes = JSON.parse(localStorage.getItem('incomes')) || [];
+let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+
+let totalIncome = incomes.reduce((s,i)=>s+i.amount,0);
+let totalExpense = expenses.reduce((s,i)=>s+i.amount,0);
+let profit = totalIncome - totalExpense;
+
+document.getElementById('incDisp').textContent = currency+" "+totalIncome;
+document.getElementById('expDisp').textContent = currency+" "+totalExpense;
+document.getElementById('profDisp').textContent = currency+" "+profit;
+
+// BAR CHART
+new Chart(document.getElementById('barChart'),{
+  type:'bar',
+  data:{
+    labels:['Income','Expenses'],
+    datasets:[{
+      data:[totalIncome,totalExpense],
+      backgroundColor:['#27ae60','#e74c3c']
+    }]
+  }
+});
+
+// PIE CHART
+let cats = {Fuel:0,Maintenance:0,Allowance:0,Other:0};
+
+expenses.forEach(e=>{
+  if(cats[e.category]) cats[e.category]+=e.amount;
+  else cats.Other+=e.amount;
+});
+
+new Chart(document.getElementById('pieChart'),{
+  type:'pie',
+  data:{
+    labels:Object.keys(cats),
+    datasets:[{
+      data:Object.values(cats),
+      backgroundColor:['#f5a623','#1a2e4a','#27ae60','#e74c3c']
+    }]
+  }
+});
+</script>
+
+</body>
+</html>

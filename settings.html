@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Settings - Budget Trucker</title>
+<style>
+:root{--navy:#1a2e4a;--navy-dark:#111e30;--navy-mid:#243c5e;--accent:#f5a623;--accent-dark:#d4891a;--success:#27ae60;--danger:#e74c3c;--warning-color:#f39c12;--bg:#eef1f6;--card:#ffffff;--text:#1a2e4a;--muted:#6b7a8d;--border:#dce3ef;--sidebar-w:260px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);}
+.sidebar{width:var(--sidebar-w);height:100vh;background:linear-gradient(180deg,var(--navy-dark) 0%,var(--navy) 100%);position:fixed;top:0;left:0;display:flex;flex-direction:column;z-index:100;overflow-y:auto;}
+.sidebar-logo{padding:24px 20px 18px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.sidebar-logo h2{color:#fff;font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.sidebar nav{flex:1;padding:14px 0;}
+.sidebar a{display:flex;align-items:center;gap:11px;color:rgba(255,255,255,0.72);text-decoration:none;padding:12px 22px;font-size:14px;font-weight:500;transition:all 0.18s;border-left:3px solid transparent;}
+.sidebar a:hover,.sidebar a.active{color:#fff;background:rgba(255,255,255,0.08);border-left-color:var(--accent);}
+.sidebar a .icon{font-size:16px;width:20px;text-align:center;}
+.sidebar-footer{padding:16px 22px;border-top:1px solid rgba(255,255,255,0.08);}
+.sidebar-footer a{display:flex;align-items:center;gap:10px;color:rgba(255,255,255,0.5);text-decoration:none;font-size:13px;padding:8px 0;}
+.sidebar-footer a:hover{color:var(--danger);}
+.main{margin-left:var(--sidebar-w);min-height:100vh;}
+.topbar{background:#fff;padding:16px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.topbar h1{font-size:20px;font-weight:700;color:var(--navy);}
+.user-chip{display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:20px;padding:6px 14px 6px 8px;font-size:13px;font-weight:600;color:var(--navy);}
+.avatar{width:30px;height:30px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;}
+.content{padding:28px;}
+.card{background:var(--card);border-radius:12px;padding:22px 24px;box-shadow:0 2px 8px rgba(26,46,74,0.07);border:1px solid var(--border);margin-bottom:20px;}
+.card h3{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+.form-group{margin-bottom:14px;}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
+input,select,textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;color:var(--text);background:#fff;outline:none;transition:border-color 0.15s;}
+input:focus,select:focus,textarea:focus{border-color:var(--navy);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 20px;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.15s;text-decoration:none;width:100%;margin-top:4px;}
+.btn-primary{background:var(--navy);color:#fff;}
+.btn-primary:hover{background:var(--navy-dark);}
+.btn-success{background:var(--success);color:#fff;}
+.btn-danger{background:var(--danger);color:#fff;}
+.btn-warning{background:var(--warning-color);color:#fff;}
+.btn-sm{padding:7px 12px;font-size:12px;width:auto;}
+.btn-row{display:flex;gap:8px;margin-top:10px;}
+.btn-row .btn{flex:1;margin-top:0;}
+.record-item{background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;}
+.record-item.income-item{border-left:4px solid var(--success);}
+.record-item.expense-item{border-left:4px solid var(--danger);}
+.record-item.fuel-item{border-left:4px solid var(--accent);}
+.record-item.trip-item{border-left:4px solid var(--navy);}
+.record-title{font-weight:700;font-size:14px;color:var(--navy);}
+.record-amount{font-size:16px;font-weight:800;margin:3px 0;}
+.income-amt{color:var(--success);}.expense-amt{color:var(--danger);}
+.record-meta{font-size:12px;color:var(--muted);margin-top:3px;}
+.total-box{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);color:#fff;border-radius:12px;padding:18px 24px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;}
+.total-box .total-label{font-size:13px;opacity:0.75;font-weight:600;}
+.total-box .total-value{font-size:26px;font-weight:800;}
+.empty{text-align:center;padding:36px 20px;color:var(--muted);font-size:14px;}
+.empty .empty-icon{font-size:36px;margin-bottom:8px;}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);}
+.setting-row:last-child{border-bottom:none;}
+.setting-info{flex:1;}
+.setting-info h4{font-size:14px;font-weight:700;color:var(--navy);}
+.setting-info p{font-size:12px;color:var(--muted);margin-top:2px;}
+.setting-control{width:200px;flex-shrink:0;}
+.dark-mode{background:#1a1a2e;color:#eee;}
+.dark-mode .sidebar{background:linear-gradient(180deg,#0d0d1a,#1a1a2e);}
+.dark-mode .main{background:#1a1a2e;}
+.dark-mode .card,.dark-mode .topbar{background:#24243e;border-color:#3a3a5c;}
+.dark-mode .topbar h1,.dark-mode .card h3{color:#eee;}
+.dark-mode input,.dark-mode select{background:#2d2d4e;color:#eee;border-color:#3a3a5c;}
+.dark-mode .record-item{background:#2d2d4e;border-color:#3a3a5c;}
+.dark-mode .user-chip{background:#2d2d4e;color:#eee;}
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-logo"><h2>🚛 Budget<span style="color:#f5a623">Trucker</span></h2></div>
+  <nav>
+    <a href="dashboard.html"><span class="icon">📊</span> Dashboard</a>
+    <a href="income.html"><span class="icon">💰</span> Income</a>
+    <a href="expense.html"><span class="icon">📤</span> Expenses</a>
+    <a href="budget.html"><span class="icon">📋</span> Budget</a>
+    <a href="reports.html"><span class="icon">📈</span> Reports</a>
+    <a href="route.html"><span class="icon">🗺️</span> Routes</a>
+    <a href="fuel.html"><span class="icon">⛽</span> Fuel Monitor</a>
+    <a href="notifications.html"><span class="icon">🔔</span> Notifications</a>
+    <a href="storage.html"><span class="icon">💾</span> Data Storage</a>
+    <a href="settings.html" class="active"><span class="icon">⚙️</span> Settings</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="login.html" onclick="localStorage.removeItem('loggedInUser')"><span class="icon">🚪</span> Logout</a>
+  </div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <h1>⚙️ Settings</h1>
+    <div class="user-chip"><div class="avatar" id="av">U</div><span id="uname">User</span></div>
+  </div>
+  <div class="content">
+    <div class="two-col">
+      <div>
+        <div class="card" style="margin-bottom:20px;">
+          <h3>💱 Currency & Language</h3>
+          <div class="setting-row">
+            <div class="setting-info"><h4>Currency</h4><p>Used across all pages</p></div>
+            <div class="setting-control">
+              <select id="currency">
+                <option value="KSh">Kenyan Shilling (KSh)</option>
+                <option value="$">USD ($)</option>
+                <option value="€">Euro (€)</option>
+                <option value="£">British Pound (£)</option>
+              </select>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info"><h4>Language</h4><p>Interface language</p></div>
+            <div class="setting-control">
+              <select id="language">
+                <option>English</option>
+                <option>Swahili</option>
+                <option>French</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="saveSettings()" style="margin-top:8px;">💾 Save Settings</button>
+          <div id="settingsMsg" style="margin-top:10px;"></div>
+        </div>
+        <div class="card">
+          <h3>🎨 Appearance</h3>
+          <div class="setting-row">
+            <div class="setting-info"><h4>Dark / Light Mode</h4><p>Toggle theme</p></div>
+            <button class="btn btn-primary btn-sm" style="width:auto;" onclick="toggleMode()">🌙 Toggle</button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:20px;">
+          <h3>💾 Backup & Restore</h3>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Keep your data safe by creating regular backups.</p>
+          <button class="btn btn-primary" onclick="backupData()" style="margin-bottom:10px;">💾 Backup All Records</button>
+          <button class="btn btn-success" onclick="restoreData()">♻️ Restore Backup</button>
+          <div id="backupMsg" style="margin-top:10px;"></div>
+        </div>
+        <div class="card">
+          <h3>👤 Account</h3>
+          <div class="setting-row">
+            <div class="setting-info"><h4>Logged in as</h4><p id="loggedAs">—</p></div>
+            <a href="login.html" class="btn btn-danger btn-sm" style="width:auto;text-decoration:none;" onclick="localStorage.removeItem('loggedInUser')">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+let u=localStorage.getItem('loggedInUser')||'User';
+document.getElementById('uname').textContent=u;
+document.getElementById('av').textContent=u.charAt(0).toUpperCase();
+document.getElementById('loggedAs').textContent=u;
+// Load saved values
+let savedCurrency=localStorage.getItem('currency')||'KSh';
+let savedLang=localStorage.getItem('language')||'English';
+document.getElementById('currency').value=savedCurrency;
+document.getElementById('language').value=savedLang;
+function showMsg(id,msg,type){
+  let el=document.getElementById(id);
+  el.innerHTML='<div style="background:'+(type==='success'?'#eafaf0':'#fdecea')+';color:'+(type==='success'?'#27ae60':'#e74c3c')+';border-radius:8px;padding:10px;font-weight:600;font-size:13px;">'+msg+'</div>';
+}
+function saveSettings(){
+  localStorage.setItem('currency',document.getElementById('currency').value);
+  localStorage.setItem('language',document.getElementById('language').value);
+  showMsg('settingsMsg','✅ Settings saved successfully.','success');
+}
+function toggleMode(){document.body.classList.toggle('dark-mode');}
+function backupData(){
+  let data={incomes:JSON.parse(localStorage.getItem('incomes'))||[],expenses:JSON.parse(localStorage.getItem('expenses'))||[],trips:JSON.parse(localStorage.getItem('trips'))||[],fuels:JSON.parse(localStorage.getItem('fuels'))||[],budget:localStorage.getItem('budget')};
+  localStorage.setItem('backup',JSON.stringify(data));
+  showMsg('backupMsg','✅ Backup completed.','success');
+}
+function restoreData(){
+  let backup=JSON.parse(localStorage.getItem('backup'));
+  if(!backup){showMsg('backupMsg','❌ No backup found.','error');return;}
+  localStorage.setItem('incomes',JSON.stringify(backup.incomes||[]));
+  localStorage.setItem('expenses',JSON.stringify(backup.expenses||[]));
+  localStorage.setItem('trips',JSON.stringify(backup.trips||[]));
+  localStorage.setItem('fuels',JSON.stringify(backup.fuels||[]));
+  if(backup.budget)localStorage.setItem('budget',backup.budget);
+  showMsg('backupMsg','✅ Data restored successfully.','success');
+}
+</script>
+</body>
+</html>
